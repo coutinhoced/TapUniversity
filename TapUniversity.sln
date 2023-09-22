@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TapUniversity", "TapUniversity\TapUniversity.csproj", "{9CC2F7EB-F747-4CAD-B17A-1F3B6CBEC7DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CC2F7EB-F747-4CAD-B17A-1F3B6CBEC7DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CC2F7EB-F747-4CAD-B17A-1F3B6CBEC7DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CC2F7EB-F747-4CAD-B17A-1F3B6CBEC7DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CC2F7EB-F747-4CAD-B17A-1F3B6CBEC7DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {40BE32A2-58B0-4334-81F7-4A294BF9D906}
+	EndGlobalSection
+EndGlobal

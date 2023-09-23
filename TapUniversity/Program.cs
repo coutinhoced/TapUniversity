@@ -109,23 +109,26 @@ namespace TapUniversity
 
         public void VerifyMapping(dynamic expandoObject, List<string> AllSubjects)
         {
-            ICollection<KeyValuePair<string, object>> subjectCriteria = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteria;
-            ICollection<KeyValuePair<string, object>> subjectCriteriaRepresentation = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteriaRepresentation;
-            ICollection<KeyValuePair<string, object>> subjectCriteriaSum = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteriaSum;
-                      
-            int subjectCriteriaCount = subjectCriteria.Count();
-            int subjectCriteriaRepresentationCount = subjectCriteriaRepresentation.Count();
-            int subjectCriteriaSumCount = subjectCriteriaSum.Count();
-       
-
-            if ((subjectCriteriaCount != subjectCriteriaRepresentationCount) || (subjectCriteriaCount != subjectCriteriaSumCount))
+            try
             {
-                Console.Beep();
-                Console.WriteLine("Issue in Mapping. Please update JSON file accordingly", Console.BackgroundColor = ConsoleColor.Red);
-                Console.Read();
-                Environment.Exit(0);
-            }
+                ICollection<KeyValuePair<string, object>> subjectCriteria = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteria;
+                ICollection<KeyValuePair<string, object>> subjectCriteriaRepresentation = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteriaRepresentation;
+                ICollection<KeyValuePair<string, object>> subjectCriteriaSum = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteriaSum;
 
+                int subjectCriteriaCount = subjectCriteria.Count();
+                int subjectCriteriaRepresentationCount = subjectCriteriaRepresentation.Count();
+                int subjectCriteriaSumCount = subjectCriteriaSum.Count();
+
+
+                if ((subjectCriteriaCount != subjectCriteriaRepresentationCount) || (subjectCriteriaCount != subjectCriteriaSumCount))
+                {
+                    WriteException.PrintException("Issue in Mapping. Please update JSON file accordingly");
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteException.PrintException(ex.Message);
+            }
         }
 
         /// <summary>
@@ -137,11 +140,18 @@ namespace TapUniversity
         public IDictionary<string, int> AddElements(int[] elements, IDictionary<string, int> initialDefaultSubjects)
         {
             Dictionary<string, int> examine = new Dictionary<string, int>(initialDefaultSubjects);
-            int i = 0;
-            foreach (var element in elements)
+            try
             {
-                examine[AllSubjects[i]] = element;
-                i++;
+                int i = 0;
+                foreach (var element in elements)
+                {
+                    examine[AllSubjects[i]] = element;
+                    i++;
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteException.PrintException(ex.Message);
             }
             return examine;
         }
@@ -154,49 +164,65 @@ namespace TapUniversity
         /// <returns></returns>
         public int Calculate(List<KeyValuePair<string, IDictionary<string, int>>> examineeDetailsList, out List<string[]> overallSummary)
         {
-            ICollection<KeyValuePair<string, object>> subjectCriteriaRepresentation = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteriaRepresentation;
-            ICollection<KeyValuePair<string, object>> subjectCriteriaList = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteria;
-            ICollection<KeyValuePair<string, object>> subjectCriteriaSum = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteriaSum;
-            int? definedGrandTotal = (int?)expandoObject.GrandTotal;
             int totalPassCandidates = 0;
-            int ex = 0;
-            string result = string.Empty;
-
-            foreach (KeyValuePair<string, IDictionary<string, int>> element in examineeDetailsList)
+            try
             {
-                int totalSum = element.Value.Values.Sum();
-                string subjectCriteria = subjectCriteriaRepresentation.Where(src => src.Value.Equals(element.Key)).FirstOrDefault().Key;
-                IEnumerable<object> subjectCriteriaLists = (IEnumerable<object>)subjectCriteriaList.Where(srl => srl.Key.Equals(subjectCriteria)).FirstOrDefault().Value;
-                IEnumerable<KeyValuePair<string, int>> specificSubjectList = element.Value.Where(e => subjectCriteriaLists.Contains(e.Key));
-                int specificSum = specificSubjectList.Sum(s => s.Value);
-                dynamic definedSpecificSum = subjectCriteriaSum.Where(scs => scs.Key.Equals(subjectCriteria)).FirstOrDefault().Value;
+                ICollection<KeyValuePair<string, object>> subjectCriteriaRepresentation = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteriaRepresentation;
+                ICollection<KeyValuePair<string, object>> subjectCriteriaList = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteria;
+                ICollection<KeyValuePair<string, object>> subjectCriteriaSum = (ICollection<KeyValuePair<string, object>>)expandoObject.SubjectCriteriaSum;
+                int? definedGrandTotal = (int?)expandoObject.GrandTotal;
+                int ex = 0;
+                string result = string.Empty;
 
-                if ((totalSum >= definedGrandTotal) && (specificSum >= definedSpecificSum))
+                foreach (KeyValuePair<string, IDictionary<string, int>> element in examineeDetailsList)
                 {
-                    totalPassCandidates++;
-                    result = "PASS";
+                    int totalSum = element.Value.Values.Sum();
+                    string subjectCriteria = subjectCriteriaRepresentation.Where(src => src.Value.Equals(element.Key)).FirstOrDefault().Key;
+                    IEnumerable<object> subjectCriteriaLists = (IEnumerable<object>)subjectCriteriaList.Where(srl => srl.Key.Equals(subjectCriteria)).FirstOrDefault().Value;
+                    IEnumerable<KeyValuePair<string, int>> specificSubjectList = element.Value.Where(e => subjectCriteriaLists.Contains(e.Key));
+                    int specificSum = specificSubjectList.Sum(s => s.Value);
+                    dynamic definedSpecificSum = subjectCriteriaSum.Where(scs => scs.Key.Equals(subjectCriteria)).FirstOrDefault().Value;
+
+                    if ((totalSum >= definedGrandTotal) && (specificSum >= definedSpecificSum))
+                    {
+                        totalPassCandidates++;
+                        result = "PASS";
+                    }
+                    else
+                    {
+                        result = "FAIL";
+                    }
+
+                    List<string> individualSummary = new List<string>();
+                    individualSummary.Add("Examinee " + (ex++));
+                    individualSummary.Add(subjectCriteria);
+                    IEnumerable<string> individualSummarySummaryValues = element.Value.Values.Select(x => x.ToString());
+                    individualSummary.AddRange(individualSummarySummaryValues);
+                    individualSummary.Add(subjectCriteria + " = " + specificSum);
+                    individualSummary.Add(totalSum.ToString());
+                    individualSummary.Add(result);
+
+                    summary.Add(individualSummary.ToArray<string>());
                 }
-                else
-                {
-                    result = "FAIL";
-                }
-
-                List<string> individualSummary = new List<string>();
-                individualSummary.Add("Examinee " + (ex++));
-                individualSummary.Add(subjectCriteria);
-                IEnumerable<string> individualSummarySummaryValues = element.Value.Values.Select(x => x.ToString());
-                individualSummary.AddRange(individualSummarySummaryValues);
-                individualSummary.Add(subjectCriteria + " = " + specificSum);
-                individualSummary.Add(totalSum.ToString());
-                individualSummary.Add(result);
-
-                summary.Add(individualSummary.ToArray<string>());
-
+            }
+            catch (Exception ex)
+            {
+                WriteException.PrintException(ex.Message);
             }
             overallSummary = summary;
             return totalPassCandidates;
         }
+    }
 
+    public static class WriteException
+    {
+        public static void PrintException(string exceptionMessage)
+        {
+            Console.Beep();
+            Console.WriteLine(exceptionMessage, Console.BackgroundColor = ConsoleColor.Red);
+            Console.Read();
+            Environment.Exit(0);
+        }
 
     }
 }

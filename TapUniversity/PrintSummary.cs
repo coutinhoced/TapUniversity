@@ -8,7 +8,7 @@ namespace TapUniversity
 {
     public static class PrintSummary
     {
-        static int tableWidth = 200;
+        static int tableWidth = Console.WindowWidth;
         public static void PrintLine()
         {
             Console.WriteLine(new string('-', tableWidth));
